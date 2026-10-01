@@ -50,22 +50,41 @@
       position: sticky;
       top: 0;
       z-index: 1000;
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.96);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid #e2e8f0;
-      padding: 10px 24px;
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid #cbd5e1;
+      padding: 9px 20px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 12px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), 
+                  opacity 0.25s ease, 
+                  margin-top 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .utility-bar.bar-hidden {
+      transform: translateY(-100%);
+      opacity: 0;
+      pointer-events: none;
+      margin-top: -65px;
+    }
+
+    body.bar-is-hidden {
+      overflow-x: auto;
+    }
+
+    body.bar-is-hidden .chart-viewport {
+      padding-top: 14px;
     }
 
     .utility-left, .utility-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
@@ -76,7 +95,7 @@
     }
 
     .search-box input {
-      padding: 7px 12px 7px 32px;
+      padding: 7px 28px 7px 32px;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
       font-size: 12.5px;
@@ -89,6 +108,25 @@
       border-color: var(--primary-teal);
       box-shadow: 0 0 0 3px rgba(13, 101, 89, 0.15);
       width: 280px;
+    }
+
+    .search-clear-btn {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0 4px;
+      line-height: 1;
+      border-radius: 50%;
+      transition: color 0.15s ease;
+    }
+
+    .search-clear-btn:hover {
+      color: #0f172a;
     }
 
     .search-icon {
@@ -128,6 +166,35 @@
       box-shadow: 0 2px 4px rgba(13, 101, 89, 0.25);
     }
 
+    /* Control Group Container */
+    .control-group {
+      display: inline-flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .zoom-badge {
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 44px;
+      text-align: center;
+      color: #1e293b;
+      user-select: none;
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .zoom-badge:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
     .control-btn {
       display: inline-flex;
       align-items: center;
@@ -135,18 +202,24 @@
       background: #ffffff;
       border: 1px solid #cbd5e1;
       border-radius: 6px;
-      padding: 6px 14px;
+      padding: 6px 12px;
       font-size: 12px;
       font-weight: 600;
       color: #334155;
       cursor: pointer;
       transition: all 0.2s ease;
+      white-space: nowrap;
+      font-family: var(--font-body);
     }
 
     .control-btn:hover {
       background: #f8fafc;
       border-color: #94a3b8;
       color: #0f172a;
+    }
+
+    .control-btn.icon-only {
+      padding: 6px 8px;
     }
 
     .control-btn.primary {
@@ -160,13 +233,121 @@
       border-color: var(--primary-teal-dark);
     }
 
-    /* Main Chart Canvas */
+    .control-btn.tv-btn {
+      background: linear-gradient(135deg, #183e7a, #102d5a);
+      color: #ffffff;
+      border-color: #0d254a;
+      box-shadow: 0 2px 4px rgba(24, 62, 122, 0.25);
+    }
+
+    .control-btn.tv-btn:hover {
+      background: linear-gradient(135deg, #102d5a, #0b1f3d);
+      color: #ffffff;
+    }
+
+    .control-btn.toggle-bar-btn {
+      background: #f1f5f9;
+      color: #334155;
+      border-color: #cbd5e1;
+    }
+
+    .control-btn.toggle-bar-btn:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+      border-color: #94a3b8;
+    }
+
+    /* Floating "i" Symbol Trigger Button (Appears when Top Bar is Hidden) */
+    .floating-info-btn {
+      position: fixed;
+      top: 14px;
+      right: 18px;
+      z-index: 2000;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #0d6559;
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(13, 101, 89, 0.45), 0 2px 6px rgba(0, 0, 0, 0.15);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      outline: none;
+    }
+
+    .floating-info-btn:hover {
+      background: #09473e;
+      transform: scale(1.12);
+      box-shadow: 0 6px 18px rgba(13, 101, 89, 0.55), 0 2px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .floating-info-btn:active {
+      transform: scale(0.94);
+    }
+
+    .floating-info-btn.visible {
+      display: flex;
+      animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes popIn {
+      from {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    /* TV Feedback Toast */
+    .tv-toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #ffffff;
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 9px 20px;
+      border-radius: 30px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      z-index: 2200;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .tv-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Main Chart Canvas & TV Scaling Wrapper */
     .chart-viewport {
-      padding: 24px;
+      padding: 20px;
       display: flex;
       justify-content: center;
-      transition: transform 0.2s ease-out;
-      transform-origin: top center;
+      align-items: flex-start;
+      min-height: calc(100vh - 65px);
+      overflow: auto;
+      transition: padding 0.3s ease;
+    }
+
+    .chart-scale-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      transition: width 0.2s ease-out, height 0.2s ease-out;
+      margin: 0 auto;
     }
 
     .chart-container {
@@ -179,6 +360,71 @@
       padding: 16px 20px 20px 20px;
       position: relative;
       overflow: visible;
+      transform-origin: top center;
+      transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Television & Ultra-Large Display Optimization (44", 55", 65"+ 4K / UHD Screens) */
+    @media screen and (min-width: 2560px) {
+      .utility-bar {
+        padding: 14px 32px;
+        gap: 16px;
+      }
+      .search-box input {
+        font-size: 14px;
+        padding: 9px 14px 9px 36px;
+        width: 300px;
+      }
+      .search-box input:focus {
+        width: 360px;
+      }
+      .pill-btn {
+        font-size: 12.5px;
+        padding: 6px 12px;
+      }
+      .control-btn {
+        font-size: 13px;
+        padding: 7px 16px;
+        gap: 8px;
+      }
+      .floating-info-btn {
+        width: 50px;
+        height: 50px;
+        top: 20px;
+        right: 26px;
+      }
+      .floating-info-btn svg {
+        width: 26px;
+        height: 26px;
+      }
+    }
+
+    /* Fullscreen & TV Mode Styles (Pure White Background) */
+    :fullscreen,
+    :-webkit-full-screen {
+      background-color: #ffffff !important;
+    }
+
+    :fullscreen body,
+    :-webkit-full-screen body,
+    body.tv-mode-active {
+      background-color: #ffffff !important;
+    }
+
+    :fullscreen .chart-viewport,
+    :-webkit-full-screen .chart-viewport,
+    body.tv-mode-active .chart-viewport {
+      background-color: #ffffff !important;
+      padding: 10px;
+      min-height: 100vh;
+    }
+
+    :fullscreen .chart-container,
+    :-webkit-full-screen .chart-container,
+    body.tv-mode-active .chart-container {
+      background-color: #ffffff !important;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08) !important;
+      border: 2px solid #0d6559 !important;
     }
 
     /* Top Institution Header */
@@ -799,7 +1045,9 @@
         print-color-adjust: exact !important;
       }
 
-      .utility-bar {
+      .utility-bar,
+      .floating-info-btn,
+      .tv-toast {
         display: none !important;
       }
 
@@ -807,6 +1055,12 @@
         padding: 0 !important;
         margin: 0 !important;
         transform: none !important;
+        min-height: auto !important;
+      }
+
+      .chart-scale-wrapper {
+        width: 100% !important;
+        height: auto !important;
       }
 
       .chart-container {
@@ -815,14 +1069,27 @@
         box-shadow: none !important;
         border: 1.5px solid #0d6559 !important;
         padding: 10px 14px !important;
+        transform: none !important;
       }
     }
   </style>
 </head>
 <body>
 
+  <!-- Floating "i" Symbol Trigger Button (Opens toolbar when clicked) -->
+  <button class="floating-info-btn" id="floatingInfoBtn" title="Click to Open Toolbar (or press H)" aria-label="Open Toolbar">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
+  </button>
+
+  <!-- Toast Notification Feedback for TV / Display -->
+  <div class="tv-toast" id="tvToast" role="status" aria-live="polite"></div>
+
   <!-- Floating Utility Header -->
-  <nav class="utility-bar" aria-label="Chart Toolbar">
+  <nav class="utility-bar" id="utilityBar" aria-label="Chart Toolbar">
     <div class="utility-left">
       <div class="search-box">
         <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -830,42 +1097,79 @@
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
         <input type="text" id="searchInput" placeholder="Search doctor, dept, committee..." autocomplete="off" />
+        <button id="searchClearBtn" class="search-clear-btn" title="Clear search" style="display:none;" type="button">&times;</button>
       </div>
 
       <div class="filter-pills" id="chapterFilterPills">
-        <button class="pill-btn active" data-chapter="all">All Standards</button>
-        <button class="pill-btn" data-chapter="COP">COP</button>
-        <button class="pill-btn" data-chapter="AAC">AAC</button>
-        <button class="pill-btn" data-chapter="MOM">MOM</button>
-        <button class="pill-btn" data-chapter="HIC">HIC</button>
-        <button class="pill-btn" data-chapter="PAC">PAC</button>
-        <button class="pill-btn" data-chapter="CQI">CQI</button>
-        <button class="pill-btn" data-chapter="PSQ">PSQ</button>
-        <button class="pill-btn" data-chapter="FMS">FMS</button>
-        <button class="pill-btn" data-chapter="HRM">HRM</button>
-        <button class="pill-btn" data-chapter="PRE">PRE</button>
+        <button class="pill-btn active" data-chapter="all" type="button">All Standards</button>
+        <button class="pill-btn" data-chapter="COP" type="button">COP</button>
+        <button class="pill-btn" data-chapter="AAC" type="button">AAC</button>
+        <button class="pill-btn" data-chapter="MOM" type="button">MOM</button>
+        <button class="pill-btn" data-chapter="HIC" type="button">HIC</button>
+        <button class="pill-btn" data-chapter="PAC" type="button">PAC</button>
+        <button class="pill-btn" data-chapter="CQI" type="button">CQI</button>
+        <button class="pill-btn" data-chapter="PSQ" type="button">PSQ</button>
+        <button class="pill-btn" data-chapter="FMS" type="button">FMS</button>
+        <button class="pill-btn" data-chapter="HRM" type="button">HRM</button>
+        <button class="pill-btn" data-chapter="IMS" type="button">IMS</button>
+        <button class="pill-btn" data-chapter="PRE" type="button">PRE</button>
       </div>
     </div>
 
     <div class="utility-right">
-      <button class="control-btn" id="zoomOutBtn" title="Zoom Out">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+      <!-- Zoom Group -->
+      <div class="control-group" title="Zoom Level (Click 100% to Reset)">
+        <button class="control-btn icon-only" id="zoomOutBtn" title="Zoom Out (-)" type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+        <span id="zoomLevelDisplay" class="zoom-badge" title="Click to reset zoom to 100%">100%</span>
+        <button class="control-btn icon-only" id="zoomInBtn" title="Zoom In (+)" type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+        </button>
+      </div>
+
+      <!-- TV Screen Fit Options -->
+      <div class="control-group">
+        <button class="control-btn" id="zoomFitScreenBtn" title="Fit Entire Chart to Screen (Press S)" type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          <span>Fit Screen</span>
+        </button>
+        <button class="control-btn" id="zoomFitWidthBtn" title="Fit Chart to Full Width (Press W)" type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"></polyline><polyline points="9 21 3 21 3 15"></polyline><line x1="21" y1="3" x2="14" y2="10"></line><line x1="3" y1="21" x2="10" y2="14"></line></svg>
+          <span>Fit Width</span>
+        </button>
+      </div>
+
+      <!-- TV Presentation Mode Button -->
+      <button class="control-btn tv-btn" id="tvModeBtn" title="TV Presentation Mode (Press F)" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="2" y="7" width="20" height="15" rx="2" ry="2"></rect>
+          <polyline points="17 2 12 7 7 2"></polyline>
+        </svg>
+        <span>TV Mode</span>
       </button>
-      <span id="zoomLevelDisplay" style="font-size: 11px; font-weight: 700; min-width: 42px; text-align: center;">100%</span>
-      <button class="control-btn" id="zoomInBtn" title="Zoom In">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="11" y1="8" x2="11" y2="14"></line><line x1="8" y1="11" x2="14" y2="11"></line></svg>
+
+      <!-- Print / Export Button -->
+      <button class="control-btn primary" id="printBtn" onclick="window.print()" title="Print or Save PDF" type="button">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+        <span>Print</span>
       </button>
-      <button class="control-btn" id="zoomFitBtn" title="Fit to Screen">Fit</button>
-      <button class="control-btn primary" id="printBtn" onclick="window.print()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-        Print / PDF
+
+      <!-- Hide Top Bar Button -->
+      <button class="control-btn toggle-bar-btn" id="hideBarBtn" title="Hide Top Bar (Press H or Esc)" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path>
+          <line x1="1" y1="1" x2="23" y2="23"></line>
+        </svg>
+        <span>Hide Bar</span>
       </button>
     </div>
   </nav>
 
-  <!-- Interactive Chart Viewport -->
+  <!-- Interactive Chart Viewport with TV Sizing Wrapper -->
   <main class="chart-viewport" id="chartViewport">
-    <div class="chart-container" id="chartContainer">
+    <div class="chart-scale-wrapper" id="chartScaleWrapper">
+      <div class="chart-container" id="chartContainer">
 
       <!-- Hospital Header Banner -->
       <header class="chart-header">
@@ -1036,6 +1340,13 @@
                     <div class="dept">Diagnostic Techs</div>
                     <div class="doctor-name doctor-dark">Senior Techs</div>
                     <div class="designation">Lab & X-Ray Technicians</div>
+                  </div>
+
+                  <div class="org-card" data-keywords="blood storage centre transfusion bsu cold chain crossmatch pack rbc" data-chapters="PAC,COP">
+                    <div class="dept">Blood Storage Centre</div>
+                    <div class="doctor-name doctor-blue">Medical Officer / Tech</div>
+                    <div class="designation">Cold Chain & Crossmatch</div>
+                    <div class="tag">(NABH: PAC, COP)</div>
                   </div>
                 </div>
               </div>
@@ -1247,6 +1558,20 @@
                     <div class="doctor-name doctor-blue">Dietitian / Kitchen Head</div>
                     <div class="designation">Patient Diets & Hygiene</div>
                   </div>
+
+                  <div class="org-card" data-keywords="ambulance emergency transport 24x7 bls als patient transfer driver paramedic" data-chapters="COP,AAC">
+                    <div class="dept">Ambulance & Transport</div>
+                    <div class="doctor-name doctor-blue">Transport In-charge</div>
+                    <div class="designation">24x7 BLS / ALS Transfer</div>
+                    <div class="tag">(NABH: COP, AAC)</div>
+                  </div>
+
+                  <div class="org-card" data-keywords="central stores purchase medical surgical supplies inventory procurement mom fms" data-chapters="MOM,FMS">
+                    <div class="dept">Central Stores & Purchase</div>
+                    <div class="doctor-name doctor-blue">Stores In-charge</div>
+                    <div class="designation">Supplies & Inventory</div>
+                    <div class="tag">(NABH: MOM, FMS)</div>
+                  </div>
                 </div>
               </div>
 
@@ -1271,6 +1596,20 @@
                     <div class="doctor-name" style="color: #b45309;">Housekeeping Supervisor</div>
                     <div class="designation">BMW Barcoding & Maint</div>
                   </div>
+
+                  <div class="org-card" data-keywords="security cctv surveillance premises safety guard entry control guard" data-chapters="FMS,PSQ">
+                    <div class="dept">Security & Surveillance</div>
+                    <div class="doctor-name" style="color: #b45309;">Security In-charge</div>
+                    <div class="designation">CCTV & Access Control</div>
+                    <div class="tag">(NABH: FMS, PSQ)</div>
+                  </div>
+
+                  <div class="org-card" data-keywords="maintenance utilities mgps medical gas pipeline hvac dg backup electrical engineering" data-chapters="FMS">
+                    <div class="dept">Maintenance & Utilities</div>
+                    <div class="doctor-name" style="color: #b45309;">Engineering Lead</div>
+                    <div class="designation">MGPS, HVAC & Power Backup</div>
+                    <div class="tag">(NABH: FMS)</div>
+                  </div>
                 </div>
               </div>
 
@@ -1294,6 +1633,20 @@
                     <div class="dept">Front Office & Billing</div>
                     <div class="doctor-name doctor-blue">Billing / TPA In-charge</div>
                     <div class="designation">Tariff, Billing Transparency</div>
+                  </div>
+
+                  <div class="org-card" data-keywords="it systems his emr electronic medical record pacs server data security backup" data-chapters="IMS">
+                    <div class="dept">IT & Systems (HIS)</div>
+                    <div class="doctor-name doctor-blue">IT Systems Admin</div>
+                    <div class="designation">HIS, EMR & Data Security</div>
+                    <div class="tag">(NABH: IMS)</div>
+                  </div>
+
+                  <div class="org-card" data-keywords="statutory compliance legal licenses aerb fire noc pollution board pcpndt legal" data-chapters="FMS,HRM">
+                    <div class="dept">Statutory Compliance</div>
+                    <div class="doctor-name doctor-blue">Compliance Officer</div>
+                    <div class="designation">AERB, Fire NOC & Licenses</div>
+                    <div class="tag">(NABH: FMS, HRM)</div>
                   </div>
                 </div>
               </div>
@@ -1354,96 +1707,343 @@
 
       </footer>
 
-    </div>
-  </main>
+    </div> <!-- chartContainer -->
+  </div> <!-- chartScaleWrapper -->
+</main>
 
-  <script>
-    // Search and Filter Functionality
-    const searchInput = document.getElementById('searchInput');
-    const chapterButtons = document.querySelectorAll('#chapterFilterPills .pill-btn');
-    const allSearchableCards = document.querySelectorAll('[data-keywords]');
-    const chartViewport = document.getElementById('chartViewport');
-    const chartContainer = document.getElementById('chartContainer');
+<script>
+  // Elements & State
+  const searchInput = document.getElementById('searchInput');
+  const searchClearBtn = document.getElementById('searchClearBtn');
+  const chapterButtons = document.querySelectorAll('#chapterFilterPills .pill-btn');
+  const chartViewport = document.getElementById('chartViewport');
+  const chartScaleWrapper = document.getElementById('chartScaleWrapper');
+  const chartContainer = document.getElementById('chartContainer');
+  const utilityBar = document.getElementById('utilityBar');
+  const floatingInfoBtn = document.getElementById('floatingInfoBtn');
+  const hideBarBtn = document.getElementById('hideBarBtn');
+  const printBtn = document.getElementById('printBtn');
+  const tvToast = document.getElementById('tvToast');
 
-    let currentChapter = 'all';
-    let currentQuery = '';
+  const zoomLevelDisplay = document.getElementById('zoomLevelDisplay');
+  const zoomInBtn = document.getElementById('zoomInBtn');
+  const zoomOutBtn = document.getElementById('zoomOutBtn');
+  const zoomFitScreenBtn = document.getElementById('zoomFitScreenBtn');
+  const zoomFitWidthBtn = document.getElementById('zoomFitWidthBtn');
+  const tvModeBtn = document.getElementById('tvModeBtn');
 
-    function applyFilter() {
-      const q = currentQuery.trim().toLowerCase();
-      let matchCount = 0;
+  let currentChapter = 'all';
+  let currentQuery = '';
+  let currentScale = 1.0;
+  let toastTimeout = null;
 
-      allSearchableCards.forEach(card => {
-        const keywords = (card.getAttribute('data-keywords') || '').toLowerCase();
-        const chapters = (card.getAttribute('data-chapters') || '').split(',');
-        const textContent = card.innerText.toLowerCase();
+  // Toast Notification for Visual Feedback
+  function showToast(message, duration = 2600) {
+    if (!tvToast) return;
+    tvToast.textContent = message;
+    tvToast.classList.add('show');
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      tvToast.classList.remove('show');
+    }, duration);
+  }
 
-        const matchesQuery = q === '' || keywords.includes(q) || textContent.includes(q);
-        const matchesChapter = currentChapter === 'all' || chapters.includes(currentChapter);
+  // Search and Filter Functionality
+  function applyFilter() {
+    const q = currentQuery.trim().toLowerCase();
+    const targetChapter = currentChapter.trim().toUpperCase();
+    let matchCount = 0;
 
-        if (matchesQuery && matchesChapter) {
-          card.classList.remove('dimmed');
-          if (q !== '' || currentChapter !== 'all') {
-            card.classList.add('highlight-active');
-          } else {
-            card.classList.remove('highlight-active');
-          }
-          matchCount++;
+    // Dynamically query all searchable cards
+    const cards = document.querySelectorAll('[data-keywords]');
+
+    cards.forEach(card => {
+      const keywords = (card.getAttribute('data-keywords') || '').toLowerCase();
+      const rawChapters = card.getAttribute('data-chapters') || '';
+      const chapters = rawChapters.split(',').map(s => s.trim().toUpperCase()).filter(Boolean);
+      const textContent = card.innerText.toLowerCase();
+
+      const matchesQuery = q === '' || keywords.includes(q) || textContent.includes(q);
+      const matchesChapter = targetChapter === 'ALL' || chapters.includes(targetChapter);
+
+      if (matchesQuery && matchesChapter) {
+        card.classList.remove('dimmed');
+        if (q !== '' || targetChapter !== 'ALL') {
+          card.classList.add('highlight-active');
         } else {
           card.classList.remove('highlight-active');
-          card.classList.add('dimmed');
         }
-      });
-    }
-
-    searchInput.addEventListener('input', (e) => {
-      currentQuery = e.target.value;
-      applyFilter();
-    });
-
-    chapterButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        chapterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentChapter = btn.getAttribute('data-chapter');
-        applyFilter();
-      });
-    });
-
-    // Zoom Controls
-    let currentScale = 1;
-    const zoomLevelDisplay = document.getElementById('zoomLevelDisplay');
-
-    function updateZoom(scale) {
-      currentScale = Math.min(Math.max(0.4, scale), 1.6);
-      chartContainer.style.transform = `scale(${currentScale})`;
-      chartContainer.style.transformOrigin = 'top center';
-      zoomLevelDisplay.textContent = Math.round(currentScale * 100) + '%';
-    }
-
-    document.getElementById('zoomInBtn').addEventListener('click', () => {
-      updateZoom(currentScale + 0.1);
-    });
-
-    document.getElementById('zoomOutBtn').addEventListener('click', () => {
-      updateZoom(currentScale - 0.1);
-    });
-
-    document.getElementById('zoomFitBtn').addEventListener('click', () => {
-      // Calculate fit scale based on viewport width
-      const availWidth = window.innerWidth - 48;
-      const targetWidth = 1720;
-      const fitScale = Math.min(1, availWidth / targetWidth);
-      updateZoom(fitScale);
-    });
-
-    // Auto fit on load if screen is smaller than chart width
-    window.addEventListener('DOMContentLoaded', () => {
-      const availWidth = window.innerWidth - 48;
-      if (availWidth < 1720) {
-        const fitScale = Math.max(0.5, availWidth / 1720);
-        updateZoom(fitScale);
+        matchCount++;
+      } else {
+        card.classList.remove('highlight-active');
+        card.classList.add('dimmed');
       }
     });
-  </script>
+  }
+
+  // Update clear button visibility
+  function updateClearBtn() {
+    if (searchClearBtn) {
+      searchClearBtn.style.display = (searchInput && searchInput.value.length > 0) ? 'block' : 'none';
+    }
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      currentQuery = e.target.value;
+      updateClearBtn();
+      applyFilter();
+    });
+  }
+
+  if (searchClearBtn) {
+    searchClearBtn.addEventListener('click', () => {
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+      }
+      currentQuery = '';
+      updateClearBtn();
+      applyFilter();
+      showToast('Search cleared');
+    });
+  }
+
+  chapterButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      chapterButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentChapter = btn.getAttribute('data-chapter') || 'all';
+      applyFilter();
+      const label = btn.textContent.trim();
+      showToast('Filter: ' + label);
+    });
+  });
+
+  // Top Bar Hide & Unhide Controls (Only opens when 'i' is clicked or H pressed)
+  function hideTopBar() {
+    utilityBar.classList.add('bar-hidden');
+    document.body.classList.add('bar-is-hidden');
+    if (floatingInfoBtn) floatingInfoBtn.classList.add('visible');
+    showToast("Top bar hidden • Click 'ℹ' to reopen (or press H)");
+  }
+
+  function showTopBar() {
+    utilityBar.classList.remove('bar-hidden');
+    document.body.classList.remove('bar-is-hidden');
+    if (floatingInfoBtn) floatingInfoBtn.classList.remove('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    showToast('Top bar opened');
+  }
+
+  function toggleTopBar() {
+    if (utilityBar.classList.contains('bar-hidden')) {
+      showTopBar();
+    } else {
+      hideTopBar();
+    }
+  }
+
+  if (hideBarBtn) hideBarBtn.addEventListener('click', hideTopBar);
+  if (floatingInfoBtn) floatingInfoBtn.addEventListener('click', showTopBar);
+
+  // Zoom and TV Sizing Function
+  function applyZoom(scale) {
+    // Allow scale from 0.25 up to 3.0
+    currentScale = Math.min(Math.max(0.25, Math.round(scale * 100) / 100), 3.0);
+    chartContainer.style.transform = `scale(${currentScale})`;
+
+    const baseWidth = 1720;
+    const baseHeight = chartContainer.offsetHeight || 1650;
+
+    // Adjust wrapper dimensions so document scroll and boundaries match scaled content exactly!
+    chartScaleWrapper.style.width = `${Math.ceil(baseWidth * currentScale)}px`;
+    chartScaleWrapper.style.height = `${Math.ceil(baseHeight * currentScale)}px`;
+
+    const percent = Math.round(currentScale * 100) + '%';
+    if (zoomLevelDisplay) zoomLevelDisplay.textContent = percent;
+  }
+
+  function fitToWidth() {
+    const availWidth = window.innerWidth - 36;
+    const targetWidth = 1720;
+    const scale = availWidth / targetWidth;
+    applyZoom(scale);
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    showToast(`Fit to Width: ${Math.round(currentScale * 100)}%`);
+  }
+
+  function fitToScreen() {
+    const isBarHidden = utilityBar.classList.contains('bar-hidden');
+    const barHeight = isBarHidden ? 0 : (utilityBar.offsetHeight || 65);
+    const availWidth = window.innerWidth - 36;
+    const availHeight = window.innerHeight - barHeight - 36;
+    const targetWidth = 1720;
+    const targetHeight = chartContainer.offsetHeight || 1650;
+
+    const scaleW = availWidth / targetWidth;
+    const scaleH = availHeight / targetHeight;
+    const scale = Math.min(scaleW, scaleH);
+    applyZoom(scale);
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    showToast(`Fitted to TV Screen: ${Math.round(currentScale * 100)}%`);
+  }
+
+  // TV Presentation Mode (Fullscreen & Pure White Background)
+  function toggleTvMode() {
+    if (!document.fullscreenElement) {
+      document.body.classList.add('tv-mode-active');
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen().then(() => {
+          hideTopBar();
+          setTimeout(fitToScreen, 220);
+          showToast("TV Fullscreen Active (White Background) • Click 'ℹ' or press F to exit");
+        }).catch(() => {
+          hideTopBar();
+          fitToScreen();
+          showToast("TV Mode Active • Click 'ℹ' to open toolbar");
+        });
+      } else {
+        hideTopBar();
+        fitToScreen();
+        showToast("TV Mode Active • Click 'ℹ' to open toolbar");
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().then(() => {
+          document.body.classList.remove('tv-mode-active');
+          showTopBar();
+          setTimeout(fitToWidth, 200);
+          showToast('Exited TV Mode');
+        }).catch(() => {
+          document.body.classList.remove('tv-mode-active');
+          showTopBar();
+        });
+      } else {
+        document.body.classList.remove('tv-mode-active');
+        showTopBar();
+      }
+    }
+  }
+
+  // Event Listeners for Zoom & TV Buttons
+  if (zoomInBtn) {
+    zoomInBtn.addEventListener('click', () => {
+      applyZoom(Math.round((currentScale + 0.1) * 10) / 10);
+    });
+  }
+
+  if (zoomOutBtn) {
+    zoomOutBtn.addEventListener('click', () => {
+      applyZoom(Math.round((currentScale - 0.1) * 10) / 10);
+    });
+  }
+
+  if (zoomLevelDisplay) {
+    zoomLevelDisplay.style.cursor = 'pointer';
+    zoomLevelDisplay.addEventListener('click', () => {
+      applyZoom(1.0);
+      showToast('Zoom reset to 100%');
+    });
+  }
+
+  if (zoomFitScreenBtn) {
+    zoomFitScreenBtn.addEventListener('click', fitToScreen);
+  }
+
+  if (zoomFitWidthBtn) {
+    zoomFitWidthBtn.addEventListener('click', fitToWidth);
+  }
+
+  if (tvModeBtn) {
+    tvModeBtn.addEventListener('click', toggleTvMode);
+  }
+
+  if (printBtn) {
+    printBtn.addEventListener('click', () => {
+      window.print();
+    });
+  }
+
+  // Fullscreen state listener
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+      document.body.classList.remove('tv-mode-active');
+      showTopBar();
+      setTimeout(fitToWidth, 200);
+      showToast('Standard View');
+    } else {
+      document.body.classList.add('tv-mode-active');
+    }
+  });
+
+  // Keyboard & TV Remote Control Hotkeys
+  window.addEventListener('keydown', (e) => {
+    // Ignore if user is typing into search box
+    if (document.activeElement === searchInput) {
+      if (e.key === 'Escape') {
+        searchInput.value = '';
+        currentQuery = '';
+        updateClearBtn();
+        applyFilter();
+        searchInput.blur();
+      }
+      return;
+    }
+
+    if (e.key === 'h' || e.key === 'H') {
+      e.preventDefault();
+      toggleTopBar();
+    } else if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      toggleTvMode();
+    } else if (e.key === 's' || e.key === 'S') {
+      e.preventDefault();
+      fitToScreen();
+    } else if (e.key === 'w' || e.key === 'W') {
+      e.preventDefault();
+      fitToWidth();
+    } else if (e.key === '+' || e.key === '=') {
+      e.preventDefault();
+      applyZoom(Math.round((currentScale + 0.1) * 10) / 10);
+    } else if (e.key === '-' || e.key === '_') {
+      e.preventDefault();
+      applyZoom(Math.round((currentScale - 0.1) * 10) / 10);
+    } else if (e.key === '0') {
+      e.preventDefault();
+      applyZoom(1.0);
+    } else if (e.key === 'Escape') {
+      if (document.fullscreenElement) {
+        toggleTvMode();
+      } else if (utilityBar.classList.contains('bar-hidden')) {
+        showTopBar();
+      }
+    }
+  });
+
+  // Auto-fit on load based on screen size (44", 55", 65" TV or monitor)
+  window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(() => {
+      const availWidth = window.innerWidth - 36;
+      if (availWidth < 1720) {
+        fitToWidth();
+      } else if (availWidth >= 2560) {
+        const tvScale = Math.min(2.0, availWidth / 1720);
+        applyZoom(tvScale);
+      } else {
+        applyZoom(1.0);
+      }
+    }, 120);
+  });
+
+  // Handle screen resize
+  let resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(() => {
+      applyZoom(currentScale);
+    }, 150);
+  });
+</script>
 </body>
 </html>
